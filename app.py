@@ -88,13 +88,13 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
 
     name = st.text_input('Name', user_data['name'])
     department = st.text_input('Department', user_data['department'])
-    gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender']))
+    gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender'].capitalize()))
     dob = st.date_input('Date of Birth', user_data['dob'], min_value=date(1900, 1, 1), max_value=date.today())
     email = st.text_input('Email', user_data['email'])
     mobile = st.text_input('Mobile', user_data['mobile'])
     aadhar = st.text_input('Aadhar', user_data['aadhar'])
-    fathers_name = st.text_input("Father's Name", user_data['fathersname'])
-    mothers_name = st.text_input("Mother's Name", user_data['mothersname'])
+    fathersname = st.text_input("Father's Name", user_data['fathersname'])
+    mothersname = st.text_input("Mother's Name", user_data['mothersname'])
 
     # Validation
     valid_mobile = len(mobile) == 10 and mobile.isdigit()
@@ -114,8 +114,8 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
             df.loc[row_index, 'email'] = email
             df.loc[row_index, 'mobile'] = mobile
             df.loc[row_index, 'aadhar'] = aadhar
-            df.loc[row_index, 'fathersname'] = fathers_name
-            df.loc[row_index, 'mothersname'] = mothers_name
+            df.loc[row_index, 'fathersname'] = fathersname
+            df.loc[row_index, 'mothersname'] = mothersname
             save_data(df)
 
     if st.button('Logout'):
