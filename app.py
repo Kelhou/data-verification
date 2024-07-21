@@ -48,6 +48,10 @@ st.markdown("<h1 style='text-align: center;'>Verification & Data Updation for 1s
 # Initialize session state
 if 'page' not in st.session_state:
     st.session_state.page = 'login'
+if 'user_data' not in st.session_state:
+    st.session_state.user_data = None
+if 'row_index' not in st.session_state:
+    st.session_state.row_index = None
 
 # Define functions for page navigation
 def goto_login():
@@ -73,7 +77,7 @@ if st.session_state.page == 'login':
                 st.success('Login successful!')
                 st.session_state.user_data = user_data
                 st.session_state.row_index = row_index
-                goto_update()  # Change page to update
+                st.session_state.page = 'update'  # Change page to update
             else:
                 st.error('Login failed! Incorrect ID or Date of Birth.')
 
@@ -84,7 +88,7 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
 
     name = st.text_input('Name', user_data['name'])
     department = st.text_input('Department', user_data['department'])
-    gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender'].capitalize()))
+    gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender']))
     dob = st.date_input('Date of Birth', user_data['dob'], min_value=date(1900, 1, 1), max_value=date.today())
     email = st.text_input('Email', user_data['email'])
     mobile = st.text_input('Mobile', user_data['mobile'])
