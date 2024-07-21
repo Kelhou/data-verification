@@ -42,7 +42,7 @@ def check_credentials(df, student_id, dob):
     return None, None
 
 # Streamlit app
-st.title('User Login and Data Update')
+st.title('Verification & Data Updation for 1st Semester Students Enrolled in Data Entry and Office Assistant Course')
 
 # Initialize session state
 if 'page' not in st.session_state:
@@ -108,4 +108,4 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
         goto_login()
 
 if __name__ == '__main__':
-    st.write('User Login and Data Update App')
+    st.write('Update Your Information: Fill Empty Fields (nan) and Correct Errors')
