@@ -57,7 +57,7 @@ def goto_login():
 def goto_update():
     st.session_state.page = 'update'
 
-# Login page
+# Handle navigation based on session state
 if st.session_state.page == 'login':
     st.subheader('Login')
     student_id = st.text_input('Student ID')
@@ -72,11 +72,10 @@ if st.session_state.page == 'login':
                 st.success('Login successful!')
                 st.session_state.user_data = user_data
                 st.session_state.row_index = row_index
-                goto_update()
+                goto_update()  # Change page to update
             else:
                 st.error('Login failed! Incorrect ID or Date of Birth.')
 
-# Update page
 if st.session_state.page == 'update' and st.session_state.user_data is not None:
     st.subheader('Update Your Details')
     user_data = st.session_state.user_data
