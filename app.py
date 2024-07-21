@@ -78,6 +78,7 @@ if st.session_state.page == 'login':
                 st.session_state.user_data = user_data
                 st.session_state.row_index = row_index
                 st.session_state.page = 'update'  # Change page to update
+                st.experimental_rerun()  # Force rerun to update page
             else:
                 st.error('Login failed! Incorrect ID or Date of Birth.')
 
@@ -120,6 +121,7 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
 
     if st.button('Logout'):
         goto_login()
+        st.experimental_rerun()  # Force rerun to update page
 
 # Removing default footer
 hide_streamlit_style = """
@@ -129,3 +131,5 @@ hide_streamlit_style = """
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
+if __name__ == '__main__':
+    st.write('User Login and Data Update App')
