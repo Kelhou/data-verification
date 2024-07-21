@@ -2,10 +2,11 @@ import streamlit as st
 import pandas as pd
 from datetime import date
 
-# Load the Excel data
+# Load the Excel data and format the date correctly
 def load_data():
     try:
         df = pd.read_excel('1stsem.xlsx')
+        df['dob'] = pd.to_datetime(df['dob']).dt.date  # Ensure dob is formatted as date
         return df
     except Exception as e:
         st.error(f"Error loading data: {e}")
@@ -14,6 +15,7 @@ def load_data():
 # Save the Excel data
 def save_data(df):
     try:
+        df['dob'] = pd.to_datetime(df['dob']).dt.strftime('%Y-%m-%d')  # Ensure dob is saved as string in correct format
         df.to_excel('1stsem.xlsx', index=False)
         st.success("Details updated successfully!")
     except Exception as e:
@@ -83,7 +85,7 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
     name = st.text_input('Name', user_data['name'])
     department = st.text_input('Department', user_data['department'])
     gender = st.text_input('Gender', user_data['gender'])
-    dob = st.date_input('Date of Birth', pd.to_datetime(user_data['dob']), min_value=date(1900, 1, 1), max_value=date.today())
+    dob = st.date_input('Date of Birth', user_data['dob'], min_value=date(1900, 1, 1), max_value=date.today())
     email = st.text_input('Email', user_data['email'])
     mobile = st.text_input('Mobile', user_data['mobile'])
     aadhar = st.text_input('Aadhar', user_data['aadhar'])
