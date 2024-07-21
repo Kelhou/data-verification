@@ -7,6 +7,7 @@ def load_data():
     try:
         df = pd.read_excel('1stsem.xlsx')
         df['dob'] = pd.to_datetime(df['dob']).dt.date  # Ensure dob is formatted as date
+        df['gender'] = df['gender'].str.capitalize()  # Capitalize gender to match selectbox options
         return df
     except Exception as e:
         st.error(f"Error loading data: {e}")
@@ -83,7 +84,7 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
 
     name = st.text_input('Name', user_data['name'])
     department = st.text_input('Department', user_data['department'])
-    gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender']))
+    gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender'].capitalize()))
     dob = st.date_input('Date of Birth', user_data['dob'], min_value=date(1900, 1, 1), max_value=date.today())
     email = st.text_input('Email', user_data['email'])
     mobile = st.text_input('Mobile', user_data['mobile'])
