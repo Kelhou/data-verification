@@ -42,7 +42,7 @@ def check_credentials(df, student_id, dob):
     return None, None
 
 # Streamlit app
-st.title('Verification & Data Updation for 1st Semester Students Enrolled in Data Entry and Office Assistant Course')
+st.markdown("<h1 style='text-align: center;'>Verification & Data Updation for 1st Semester Students Enrolled in Data Entry and Office Assistant Course</h1>", unsafe_allow_html=True)
 
 # Initialize session state
 if 'page' not in st.session_state:
@@ -77,7 +77,7 @@ if st.session_state.page == 'login':
                 st.error('Login failed! Incorrect ID or Date of Birth.')
 
 if st.session_state.page == 'update' and st.session_state.user_data is not None:
-    st.subheader('Update Your Details')
+    st.markdown("<h2 style='text-align: center;'>Update Your Information: Fill Empty Fields (nan) and Correct Errors</h2>", unsafe_allow_html=True)
     user_data = st.session_state.user_data
     row_index = st.session_state.row_index
 
@@ -107,5 +107,10 @@ if st.session_state.page == 'update' and st.session_state.user_data is not None:
     if st.button('Logout'):
         goto_login()
 
-if __name__ == '__main__':
-    st.write('Update Your Information: Fill Empty Fields (nan) and Correct Errors')
+# Removing default footer
+hide_streamlit_style = """
+            <style>
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
