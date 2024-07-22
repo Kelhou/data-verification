@@ -9,10 +9,6 @@ import base64
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
 APP_PASSWORD = st.secrets["APP_PASSWORD"]
 
-# Display environment variable status for debugging
-st.write(f"GITHUB_TOKEN loaded: {'Yes' if GITHUB_TOKEN else 'No'}")
-st.write(f"APP_PASSWORD loaded: {'Yes' if APP_PASSWORD else 'No'}")
-
 # Load the Excel data from a private GitHub repository
 def load_data():
     try:
@@ -95,8 +91,6 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.subheader('Authentication')
     password = st.text_input('Password', type='password')
-    st.write(f"Entered password: {password}")  # Debugging: show the entered password
-    st.write(f"Expected password: {APP_PASSWORD}")  # Debugging: show the expected password
 
     if st.button('Login'):
         if password == APP_PASSWORD:
