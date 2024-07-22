@@ -3,17 +3,13 @@ import pandas as pd
 import requests
 from io import BytesIO
 from datetime import date
-import os
-from dotenv import load_dotenv
 import base64
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from Streamlit secrets
+GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+APP_PASSWORD = st.secrets["APP_PASSWORD"]
 
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-APP_PASSWORD = os.getenv("APP_PASSWORD")
-
-# Log environment variable loading
+# Display environment variable status for debugging
 st.write(f"GITHUB_TOKEN loaded: {'Yes' if GITHUB_TOKEN else 'No'}")
 st.write(f"APP_PASSWORD loaded: {'Yes' if APP_PASSWORD else 'No'}")
 
@@ -99,6 +95,9 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.subheader('Authentication')
     password = st.text_input('Password', type='password')
+    st.write(f"Entered password: {password}")  # Debugging: show the entered password
+    st.write(f"Expected password: {APP_PASSWORD}")  # Debugging: show the expected password
+
     if st.button('Login'):
         if password == APP_PASSWORD:
             st.session_state.authenticated = True

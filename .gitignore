@@ -1,3 +1,12 @@
-# .gitignore
-config.py
+# Ignore environment variables
 .env
+
+# Ignore Streamlit secrets file
+.streamlit/secrets.toml
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore other system files
+.DS_Store
