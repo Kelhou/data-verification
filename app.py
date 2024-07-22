@@ -11,9 +11,11 @@ import base64
 load_dotenv()
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+APP_PASSWORD = os.getenv("APP_PASSWORD")
 
 # Log environment variable loading
 st.write(f"GITHUB_TOKEN loaded: {'Yes' if GITHUB_TOKEN else 'No'}")
+st.write(f"APP_PASSWORD loaded: {'Yes' if APP_PASSWORD else 'No'}")
 
 # Load the Excel data from a private GitHub repository
 def load_data():
@@ -98,7 +100,7 @@ if not st.session_state.authenticated:
     st.subheader('Authentication')
     password = st.text_input('Password', type='password')
     if st.button('Login'):
-        if password == "your_password_here":  # Replace with your actual password
+        if password == APP_PASSWORD:
             st.session_state.authenticated = True
             st.experimental_rerun()
         else:
