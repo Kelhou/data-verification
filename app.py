@@ -14,12 +14,9 @@ def load_data():
     try:
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
         url = "https://api.github.com/repos/Kelhou/privdata/contents/1stsem.xlsx?ref=main"  # GitHub API URL
-        st.write(f"Fetching file from URL: {url}")
         response = requests.get(url, headers=headers)
-        st.write(f"GitHub API response status code: {response.status_code}")
         response.raise_for_status()
         file_info = response.json()
-        st.write(f"File info: {file_info}")
         
         # Decode the base64 content
         file_content = base64.b64decode(file_info['content'])
@@ -40,23 +37,21 @@ def save_data(df):
         df['dob'] = pd.to_datetime(df['dob']).dt.strftime('%Y-%m-%d')  # Ensure dob is saved as string in correct format
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
         url = "https://api.github.com/repos/Kelhou/privdata/contents/1stsem.xlsx?ref=main"  # GitHub API URL
-        st.write(f"Fetching SHA from URL: {url}")
         response = requests.get(url, headers=headers)
-        st.write(f"GitHub API response status code: {response.status_code}")
         response.raise_for_status()
         sha = response.json()['sha']
         
         # Prepare the data for the update
-        file_content = df.to_excel(index=False).encode('utf-8')
-        content_encoded = base64.b64encode(file_content).decode('utf-8')
+        file = BytesIO()
+        df.to_excel(file, index=False)
+        file.seek(0)
+        content_encoded = base64.b64encode(file.read()).decode('utf-8')
         data = {
             "message": "Updated 1stsem.xlsx",
             "content": content_encoded,
             "sha": sha
         }
-        st.write(f"Updating file at URL: {url}")
         response = requests.put(url, json=data, headers=headers)
-        st.write(f"GitHub API response status code: {response.status_code}")
         response.raise_for_status()
         st.success("Details updated successfully!")
     except Exception as e:
