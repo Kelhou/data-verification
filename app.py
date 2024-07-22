@@ -5,12 +5,12 @@ from io import BytesIO
 from datetime import date
 import base64
 
-# Load environment variables from Streamlit secrets
+
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
 APP_PASSWORD = st.secrets["APP_PASSWORD"]
 ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
 
-# Load the Excel data from a private GitHub repository
+
 def load_data():
     try:
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
@@ -19,20 +19,20 @@ def load_data():
         response.raise_for_status()
         file_info = response.json()
         
-        # Decode the base64 content
+ 
         file_content = base64.b64decode(file_info['content'])
         file = BytesIO(file_content)
         
-        # Read the Excel file into a DataFrame
+      
         df = pd.read_excel(file)
-        df['dob'] = pd.to_datetime(df['dob']).dt.date  # Ensure dob is formatted as date
-        df['gender'] = df['gender'].str.capitalize()  # Capitalize gender to match selectbox options
+        df['dob'] = pd.to_datetime(df['dob']).dt.date  
+        df['gender'] = df['gender'].str.capitalize()  
         return df
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()
 
-# Save the Excel data back to the private GitHub repository
+
 def save_data(df):
     try:
         df['dob'] = pd.to_datetime(df['dob']).dt.strftime('%Y-%m-%d')  # Ensure dob is saved as string in correct format
@@ -42,7 +42,7 @@ def save_data(df):
         response.raise_for_status()
         sha = response.json()['sha']
         
-        # Prepare the data for the update
+       
         file = BytesIO()
         df.to_excel(file, index=False)
         file.seek(0)
@@ -58,15 +58,15 @@ def save_data(df):
     except Exception as e:
         st.error(f"Error saving data: {e}")
 
-# Normalize strings for comparison
+
 def normalize_string(s):
     return str(s).strip().lower()
 
-# Normalize dates for comparison
+
 def normalize_date(d):
     return pd.to_datetime(d).strftime('%Y-%m-%d')
 
-# Check login credentials
+
 def check_credentials(df, student_id, dob):
     normalized_uid = normalize_string(student_id)
     normalized_dob = normalize_date(dob)
@@ -78,7 +78,6 @@ def check_credentials(df, student_id, dob):
             return i, row
     return None, None
 
-# Streamlit app
 st.markdown("""
     <style>
         .main-heading {
@@ -94,8 +93,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='main-heading'>Verification & Data Updation</div>", unsafe_allow_html=True)
-st.markdown("<div class='sub-heading'>for 1st Semester Students Enrolled in Data Entry and Office Assistant Course</div>", unsafe_allow_html=True)
+if not st.session_state.get('authenticated', False) and not st.session_state.get('admin_authenticated', False):
+    st.markdown("<div class='main-heading'>Verification & Data Updation</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sub-heading'>for 1st Semester Students Enrolled in Data Entry and Office Assistant Course</div>", unsafe_allow_html=True)
 
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
@@ -195,8 +195,8 @@ elif st.session_state.authenticated:
         gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender'].capitalize()))
         dob = st.date_input('Date of Birth', user_data['dob'], min_value=date(1900, 1, 1), max_value=date.today())
         email = st.text_input('Email', user_data['email'])
-        mobile = st.text_input('Mobile', user_data['mobile'])
-        aadhar = st.text_input('Aadhar', user_data['aadhar'])
+        mobile = st.text_input('Mobile', user_data['mobile'], max_chars=10)
+        aadhar = st.text_input('Aadhar', user_data['aadhar'], max_chars=12)
         fathersname = st.text_input("Father's Name", user_data['fathersname'])
         mothersname = st.text_input("Mother's Name", user_data['mothersname'])
 
