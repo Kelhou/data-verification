@@ -101,21 +101,57 @@ if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 if 'admin_authenticated' not in st.session_state:
     st.session_state.admin_authenticated = False
+if 'page' not in st.session_state:
+    st.session_state.page = 'user_login'
 
-if not st.session_state.authenticated and not st.session_state.admin_authenticated:
-    st.subheader('Authentication')
-    user_type = st.radio('Login as:', ('User', 'Admin'))
+def goto_user_login():
+    st.session_state.page = 'user_login'
+
+def goto_admin_login():
+    st.session_state.page = 'admin_login'
+
+if st.session_state.page == 'user_login':
+    st.subheader('User Login')
+    student_id = st.text_input('Student ID')
+    dob = st.date_input('Date of Birth', min_value=date(1900, 1, 1), max_value=date.today())
     password = st.text_input('Password', type='password')
 
-    if st.button('Login'):
-        if user_type == 'User' and password == APP_PASSWORD:
-            st.session_state.authenticated = True
-            st.experimental_rerun()
-        elif user_type == 'Admin' and password == ADMIN_PASSWORD:
+    if st.button('Login as User'):
+        if password == APP_PASSWORD:
+            df = load_data()
+            if not df.empty:
+                dob_str = dob.strftime('%Y-%m-%d')
+                row_index, user_data = check_credentials(df, student_id, dob_str)
+                if user_data is not None:
+                    st.success('Login successful!')
+                    st.session_state.authenticated = True
+                    st.session_state.user_data = user_data
+                    st.session_state.row_index = row_index
+                    st.session_state.page = 'update'
+                    st.experimental_rerun()
+                else:
+                    st.error('Login failed! Incorrect ID or Date of Birth.')
+        else:
+            st.error('Incorrect password')
+
+    if st.button('Go to Admin Login'):
+        goto_admin_login()
+        st.experimental_rerun()
+
+elif st.session_state.page == 'admin_login':
+    st.subheader('Admin Login')
+    password = st.text_input('Password', type='password')
+
+    if st.button('Login as Admin'):
+        if password == ADMIN_PASSWORD:
             st.session_state.admin_authenticated = True
             st.experimental_rerun()
         else:
             st.error('Incorrect password')
+
+    if st.button('Go to User Login'):
+        goto_user_login()
+        st.experimental_rerun()
 
 elif st.session_state.authenticated:
     if 'page' not in st.session_state:
