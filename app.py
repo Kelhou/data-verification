@@ -8,6 +8,7 @@ import base64
 # Load environment variables from Streamlit secrets
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
 APP_PASSWORD = st.secrets["APP_PASSWORD"]
+ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
 
 # Load the Excel data from a private GitHub repository
 def load_data():
@@ -94,22 +95,29 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<div class='main-heading'>Verification & Data Updation</div>", unsafe_allow_html=True)
-st.markdown("<div class='sub-heading'>For 1st Semester Students Enrolled in Data Entry and Office Assistant Course</div>", unsafe_allow_html=True)
+st.markdown("<div class='sub-heading'>for 1st Semester Students Enrolled in Data Entry and Office Assistant Course</div>", unsafe_allow_html=True)
 
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
+if 'admin_authenticated' not in st.session_state:
+    st.session_state.admin_authenticated = False
 
-if not st.session_state.authenticated:
+if not st.session_state.authenticated and not st.session_state.admin_authenticated:
     st.subheader('Authentication')
+    user_type = st.radio('Login as:', ('User', 'Admin'))
     password = st.text_input('Password', type='password')
 
     if st.button('Login'):
-        if password == APP_PASSWORD:
+        if user_type == 'User' and password == APP_PASSWORD:
             st.session_state.authenticated = True
+            st.experimental_rerun()
+        elif user_type == 'Admin' and password == ADMIN_PASSWORD:
+            st.session_state.admin_authenticated = True
             st.experimental_rerun()
         else:
             st.error('Incorrect password')
-else:
+
+elif st.session_state.authenticated:
     if 'page' not in st.session_state:
         st.session_state.page = 'login'
     if 'user_data' not in st.session_state:
@@ -121,9 +129,6 @@ else:
         st.session_state.page = 'login'
         st.session_state.user_data = None
         st.session_state.row_index = None
-
-    def goto_update():
-        st.session_state.page = 'update'
 
     if st.session_state.page == 'login':
         st.subheader('Login')
@@ -183,6 +188,27 @@ else:
         if st.button('Logout'):
             goto_login()
             st.experimental_rerun()
+
+elif st.session_state.admin_authenticated:
+    st.subheader("Admin Dashboard")
+
+    if st.button("Refresh Data"):
+        df = load_data()
+        if not df.empty:
+            st.write("Current Data")
+            st.dataframe(df)
+    
+    df = load_data()
+    if not df.empty:
+        st.write("Current Data")
+        st.dataframe(df)
+    
+    if st.button("Logout"):
+        st.session_state.admin_authenticated = False
+        st.experimental_rerun()
+
+    if st.button("Save Changes"):
+        save_data(df)
 
     hide_streamlit_style = """
                 <style>
