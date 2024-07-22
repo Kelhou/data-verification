@@ -80,16 +80,21 @@ def check_credentials(df, student_id, dob):
 # Streamlit app
 st.markdown("""
     <style>
-        .full-width-header {
-            width: 100%;
+        .main-heading {
             text-align: center;
             font-size: 2.5em;
             font-weight: bold;
         }
+        .sub-heading {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: -10px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='full-width-header'>Verification & Data Updation for 1st Semester Students Enrolled in Data Entry and Office Assistant Course</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-heading'>Verification & Data Updation</div>", unsafe_allow_html=True)
+st.markdown("<div class='sub-heading'>For 1st Semester Students Enrolled in Data Entry and Office Assistant Course</div>", unsafe_allow_html=True)
 
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
@@ -178,14 +183,6 @@ else:
         if st.button('Logout'):
             goto_login()
             st.experimental_rerun()
-
-    # Display live data view
-    st.subheader("Live Data View")
-    if st.button("Refresh Data"):
-        df = load_data()
-        if not df.empty:
-            st.write("Current Data")
-            st.dataframe(df)
 
     hide_streamlit_style = """
                 <style>
