@@ -183,8 +183,8 @@ elif st.session_state.authenticated:
                     st.error('Login failed! Incorrect ID or Date of Birth.')
 
     if st.session_state.page == 'update' and st.session_state.user_data is not None:
-        st.markdown("<div class='main-heading'>Update Your Information: Fill Empty Fields (nan) and Correct Errors</div>", unsafe_allow_html=True)
-        st.markdown("<div class='sub-heading'>According to your aadhar and HSLC Admit Card Details</div>", unsafe_allow_html=True)
+        st.markdown("<div class='main-heading'>Update Your Information: </div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-heading'>Fill Up Empty Fields (nan) According to your aadhar and HSLC Admit Card Details and Correct any Errors,</div>", unsafe_allow_html=True)
         user_data = st.session_state.user_data
         row_index = st.session_state.row_index
         name = st.text_input('Name', user_data['name'])
