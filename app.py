@@ -14,16 +14,14 @@ ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
 def load_data():
     try:
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-        url = "https://api.github.com/repos/Kelhou/privdata/contents/1stsem.xlsx?ref=main"  # GitHub API URL
+        url = "https://api.github.com/repos/Kelhou/privdata/contents/1stsem.xlsx?ref=main"  
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         file_info = response.json()
         
- 
         file_content = base64.b64decode(file_info['content'])
         file = BytesIO(file_content)
         
-      
         df = pd.read_excel(file)
         df['dob'] = pd.to_datetime(df['dob']).dt.date  
         df['gender'] = df['gender'].str.capitalize()  
@@ -35,14 +33,13 @@ def load_data():
 
 def save_data(df):
     try:
-        df['dob'] = pd.to_datetime(df['dob']).dt.strftime('%Y-%m-%d')  # Ensure dob is saved as string in correct format
+        df['dob'] = pd.to_datetime(df['dob']).dt.strftime('%Y-%m-%d')  
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-        url = "https://api.github.com/repos/Kelhou/privdata/contents/1stsem.xlsx?ref=main"  # GitHub API URL
+        url = "https://api.github.com/repos/Kelhou/privdata/contents/1stsem.xlsx?ref=main"  
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         sha = response.json()['sha']
         
-       
         file = BytesIO()
         df.to_excel(file, index=False)
         file.seek(0)
@@ -186,10 +183,10 @@ elif st.session_state.authenticated:
                     st.error('Login failed! Incorrect ID or Date of Birth.')
 
     if st.session_state.page == 'update' and st.session_state.user_data is not None:
-        st.markdown("<h2 style='text-align: center;'>Update Your Information: Fill Empty Fields (nan) and Correct Errors</h2>", unsafe_allow_html=True)
+        st.markdown("<div class='main-heading'>Update Your Information: Fill Empty Fields (nan) and Correct Errors</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-heading'>According to your aadhar and HSLC Admit Card Details</div>", unsafe_allow_html=True)
         user_data = st.session_state.user_data
         row_index = st.session_state.row_index
-
         name = st.text_input('Name', user_data['name'])
         department = st.text_input('Department', user_data['department'])
         gender = st.selectbox('Gender', ['Male', 'Female'], index=['Male', 'Female'].index(user_data['gender'].capitalize()))
