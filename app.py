@@ -125,7 +125,7 @@ if st.session_state.page == 'user_login':
                     st.session_state.user_data = user_data
                     st.session_state.row_index = row_index
                     st.session_state.page = 'update'
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error('Login failed! Incorrect ID or Date of Birth.')
         else:
@@ -133,7 +133,7 @@ if st.session_state.page == 'user_login':
 
     if st.button('Go to Admin Login'):
         goto_admin_login()
-        st.experimental_rerun()
+        st.rerun()
 
 elif st.session_state.page == 'admin_login':
     st.subheader('Admin Login')
@@ -142,13 +142,13 @@ elif st.session_state.page == 'admin_login':
     if st.button('Login as Admin'):
         if password == ADMIN_PASSWORD:
             st.session_state.admin_authenticated = True
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error('Incorrect password')
 
     if st.button('Go to User Login'):
         goto_user_login()
-        st.experimental_rerun()
+        st.rerun()
 
 elif st.session_state.authenticated:
     if 'page' not in st.session_state:
@@ -178,7 +178,7 @@ elif st.session_state.authenticated:
                     st.session_state.user_data = user_data
                     st.session_state.row_index = row_index
                     st.session_state.page = 'update'
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error('Login failed! Incorrect ID or Date of Birth.')
 
@@ -220,7 +220,7 @@ elif st.session_state.authenticated:
 
         if st.button('Logout'):
             goto_login()
-            st.experimental_rerun()
+            st.rerun()
 
 elif st.session_state.admin_authenticated:
     st.subheader("Admin Dashboard")
@@ -238,7 +238,7 @@ elif st.session_state.admin_authenticated:
     
     if st.button("Logout"):
         st.session_state.admin_authenticated = False
-        st.experimental_rerun()
+        st.rerun()
 
     if st.button("Save Changes"):
         save_data(df)
