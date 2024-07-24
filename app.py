@@ -91,21 +91,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-def goto_user_login():
-    st.session_state.page = 'user_login'
-
-def goto_admin_login():
-    st.session_state.page = 'admin_login'
-
-# Display "Go to Admin Login" link
-st.markdown('<div class="admin-link" onclick="goto_admin_login()">Go to Admin Login</div>', unsafe_allow_html=True)
-
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 if 'admin_authenticated' not in st.session_state:
     st.session_state.admin_authenticated = False
 if 'page' not in st.session_state:
     st.session_state.page = 'user_login'
+
+def goto_user_login():
+    st.session_state.page = 'user_login'
+
+def goto_admin_login():
+    st.session_state.page = 'admin_login'
 
 if st.session_state.page == 'user_login':
     st.subheader('User Login')
@@ -175,8 +172,8 @@ elif st.session_state.authenticated:
                     st.error('Login failed! Incorrect ID or Date of Birth.')
 
     if st.session_state.page == 'update' and st.session_state.user_data is not None:
-        st.markdown("<div class='main-heading'>Update Your Information: Fill Empty Fields (nan) and Correct Errors</div>", unsafe_allow_html=True)
-        st.markdown("<div class='sub-heading'>According to your aadhar and HSLC Admit Card Details</div>", unsafe_allow_html=True)
+        st.markdown("<div class='main-heading'>Update Your Information:</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-heading'>Fill Up Empty Fields (nan) According to your aadhar and HSLC Admit Card Details and Correct Any Errors</div>", unsafe_allow_html=True)
         user_data = st.session_state.user_data
         row_index = st.session_state.row_index
         name = st.text_input('Name', user_data['name'])
@@ -233,11 +230,3 @@ elif st.session_state.admin_authenticated:
         st.experimental_rerun()
 
     if st.button("Save Changes"):
-        save_data(df)
-
-    hide_streamlit_style = """
-                <style>
-                footer {visibility: hidden;}
-                </style>
-                """
-    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
