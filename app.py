@@ -5,11 +5,9 @@ from io import BytesIO
 from datetime import date
 import base64
 
-
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
 APP_PASSWORD = st.secrets["APP_PASSWORD"]
 ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
-
 
 def load_data():
     try:
@@ -29,7 +27,6 @@ def load_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()
-
 
 def save_data(df):
     try:
@@ -55,14 +52,11 @@ def save_data(df):
     except Exception as e:
         st.error(f"Error saving data: {e}")
 
-
 def normalize_string(s):
     return str(s).strip().lower()
 
-
 def normalize_date(d):
     return pd.to_datetime(d).strftime('%Y-%m-%d')
-
 
 def check_credentials(df, student_id, dob):
     normalized_uid = normalize_string(student_id)
@@ -70,7 +64,6 @@ def check_credentials(df, student_id, dob):
     for i, row in df.iterrows():
         row_uid = normalize_string(row['uid'])
         row_dob = normalize_date(row['dob'])
-
         if row_uid == normalized_uid and row_dob == normalized_dob:
             return i, row
     return None, None
@@ -87,12 +80,25 @@ st.markdown("""
             font-size: 1.5em;
             margin-top: -10px;
         }
+        .admin-link {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8em;
+            color: #007bff;
+            cursor: pointer;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-if not st.session_state.get('authenticated', False) and not st.session_state.get('admin_authenticated', False):
-    st.markdown("<div class='main-heading'>Verification & Data Updation</div>", unsafe_allow_html=True)
-    st.markdown("<div class='sub-heading'>for 1st Semester Students Enrolled in Data Entry and Office Assistant Course</div>", unsafe_allow_html=True)
+def goto_user_login():
+    st.session_state.page = 'user_login'
+
+def goto_admin_login():
+    st.session_state.page = 'admin_login'
+
+# Display "Go to Admin Login" link
+st.markdown('<div class="admin-link" onclick="goto_admin_login()">Go to Admin Login</div>', unsafe_allow_html=True)
 
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
@@ -100,12 +106,6 @@ if 'admin_authenticated' not in st.session_state:
     st.session_state.admin_authenticated = False
 if 'page' not in st.session_state:
     st.session_state.page = 'user_login'
-
-def goto_user_login():
-    st.session_state.page = 'user_login'
-
-def goto_admin_login():
-    st.session_state.page = 'admin_login'
 
 if st.session_state.page == 'user_login':
     st.subheader('User Login')
@@ -125,15 +125,11 @@ if st.session_state.page == 'user_login':
                     st.session_state.user_data = user_data
                     st.session_state.row_index = row_index
                     st.session_state.page = 'update'
-                    st.rerun()
+                    st.experimental_rerun()
                 else:
                     st.error('Login failed! Incorrect ID or Date of Birth.')
         else:
             st.error('Incorrect password')
-
-    if st.button('Go to Admin Login'):
-        goto_admin_login()
-        st.rerun()
 
 elif st.session_state.page == 'admin_login':
     st.subheader('Admin Login')
@@ -142,13 +138,9 @@ elif st.session_state.page == 'admin_login':
     if st.button('Login as Admin'):
         if password == ADMIN_PASSWORD:
             st.session_state.admin_authenticated = True
-            st.rerun()
+            st.experimental_rerun()
         else:
             st.error('Incorrect password')
-
-    if st.button('Go to User Login'):
-        goto_user_login()
-        st.rerun()
 
 elif st.session_state.authenticated:
     if 'page' not in st.session_state:
@@ -178,13 +170,13 @@ elif st.session_state.authenticated:
                     st.session_state.user_data = user_data
                     st.session_state.row_index = row_index
                     st.session_state.page = 'update'
-                    st.rerun()
+                    st.experimental_rerun()
                 else:
                     st.error('Login failed! Incorrect ID or Date of Birth.')
 
     if st.session_state.page == 'update' and st.session_state.user_data is not None:
-        st.markdown("<div class='main-heading'>Update Your Information: </div>", unsafe_allow_html=True)
-        st.markdown("<div class='sub-heading'>Fill Up Empty Fields (nan) According to your aadhar and HSLC Admit Card Details and Correct any Errors,</div>", unsafe_allow_html=True)
+        st.markdown("<div class='main-heading'>Update Your Information: Fill Empty Fields (nan) and Correct Errors</div>", unsafe_allow_html=True)
+        st.markdown("<div class='sub-heading'>According to your aadhar and HSLC Admit Card Details</div>", unsafe_allow_html=True)
         user_data = st.session_state.user_data
         row_index = st.session_state.row_index
         name = st.text_input('Name', user_data['name'])
@@ -220,7 +212,7 @@ elif st.session_state.authenticated:
 
         if st.button('Logout'):
             goto_login()
-            st.rerun()
+            st.experimental_rerun()
 
 elif st.session_state.admin_authenticated:
     st.subheader("Admin Dashboard")
@@ -238,7 +230,7 @@ elif st.session_state.admin_authenticated:
     
     if st.button("Logout"):
         st.session_state.admin_authenticated = False
-        st.rerun()
+        st.experimental_rerun()
 
     if st.button("Save Changes"):
         save_data(df)
